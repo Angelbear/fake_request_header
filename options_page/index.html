@@ -1,0 +1,66 @@
+<!DOCTYPE html> 
+<html ng-app>
+<head> 
+  <title></title>
+  <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href='http://fonts.googleapis.com/css?family=Dosis:600' rel='stylesheet' type='text/css'>
+  <script src="../datastore.js"></script>
+  <script src="../policy.js"></script>
+  <script src="angular-1.1.0.js"></script>
+  <script src="option.js"></script>
+  <script src="base64.js"></script>
+  <script src="json2.js"></script>
+</head> 
+<body>
+  <script type="text/ng-template" id="rule">
+    <h2>{{ rulekey }}</h2>
+      <select ng-model="rule.ruletype" ng-change="save()">
+        <option ng-selected="rule.ruletype == key" title="{{type.desc}}" ng-repeat="(key,type) in ruletypes" value="{{ key }}">{{ type.label }}</option>
+      </select>
+      <span ng-show="isDisplayRuleValue()">
+        <textarea type="text" rows="3" style="width:100%" ng-model="rule.value" ng-change="save()"/>
+      </span>
+  </script>
+
+  <h1>Policies</h1>
+  <div ng-controller="FormListCtrl">
+    <ul>
+      <li ng-repeat="(idx, policy) in policies">
+        <form name="form" class="policyform floatbox" ng-controller="FormCtrl">
+          <div class="move button-group">
+            <span ng-click="up(idx)" class="arrowup icon button">Up</span>
+            <span ng-click="down(idx)" class="arrowdown icon button">Down</span>
+          </div>
+          <div class="buttons">
+            <span class="button" ng-click="save()">Save</span>
+            <span class="button icon remove danger" ng-click="remove(idx)">Remove</span>
+            <span class="button" ng-click="export()">Export</span>
+          </div>
+          <div class="pattern">
+            <input type="text" ng-change="save()" ng-pattern="urlRegex" ng-model="policy.pattern" placeholder="ex: http://image.itmedia.co.jp/*" required />
+          </div>
+          <div class="rules" ng-repeat="rulekey in rules" ng-controller="RuleCtrl">
+            <ng-include src="'rule'"></ng-include>
+          </div>
+        </form>
+      </li>
+    </ul>
+    <span class="button icon add" ng-click="policies.push(emptyPolicy())">Add policy</span>
+    <span class="button icon reload" ng-click="import()">Import policy</span>
+    <input type="text" style="width:100%" ng-model="string.value"/>
+  </div>
+
+  <h1>How to setup</h1>
+  <div class="floatbox">
+    <ol>
+      <li>Click 'Add policy'</li>
+      <li>Input target URL pattern such as <var>http://*.fc2.com/*</var></li>
+      <li>Select your rule. e.g. Referer as 'empty'</li>
+      <li>Done!</li>
+    </ol>
+    <p>
+      NOTE: URL patterns should be valid as <a href="http://developer.chrome.com/extensions/match_patterns.html">Chrome match patterns</a>.
+    </p>
+  </div>
+
+</body></html> 
