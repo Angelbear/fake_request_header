@@ -6,10 +6,9 @@
   <link href='http://fonts.googleapis.com/css?family=Dosis:600' rel='stylesheet' type='text/css'>
   <script src="../datastore.js"></script>
   <script src="../policy.js"></script>
-  <script src="angular-1.1.0.js"></script>
+  <script src="angular.min.js"></script>
   <script src="option.js"></script>
   <script src="base64.js"></script>
-  <script src="json2.js"></script>
 </head> 
 <body>
   <script type="text/ng-template" id="rule">
@@ -18,7 +17,7 @@
         <option ng-selected="rule.ruletype == key" title="{{type.desc}}" ng-repeat="(key,type) in ruletypes" value="{{ key }}">{{ type.label }}</option>
       </select>
       <span ng-show="isDisplayRuleValue()">
-        <textarea type="text" rows="3" style="width:100%" ng-model="rule.value" ng-change="save()"/>
+        <textarea type="text" rows="3" style="width:100%" ng-pattern="rulepattern" ng-model="rule.value" ng-change="save()"/>
       </span>
   </script>
 
@@ -32,12 +31,17 @@
             <span ng-click="down(idx)" class="arrowdown icon button">Down</span>
           </div>
           <div class="buttons">
-            <span class="button" ng-click="save()">Save</span>
             <span class="button icon remove danger" ng-click="remove(idx)">Remove</span>
             <span class="button" ng-click="export()">Export</span>
           </div>
           <div class="pattern">
             <input type="text" ng-change="save()" ng-pattern="urlRegex" ng-model="policy.pattern" placeholder="ex: http://image.itmedia.co.jp/*" required />
+          </div>
+          <div class="title">
+            <h2>Policy Name</h2>
+            <input type="text" ng-change="save()" ng-model="policy.name" required />
+            <h2>Enable</h2>
+            <input type="checkbox" ng-change="save()" ng-model="policy.enable" ng-true-value="1" ng-false-value="0"/>
           </div>
           <div class="rules" ng-repeat="rulekey in rules" ng-controller="RuleCtrl">
             <ng-include src="'rule'"></ng-include>
@@ -45,9 +49,14 @@
         </form>
       </li>
     </ul>
-    <span class="button icon add" ng-click="policies.push(emptyPolicy())">Add policy</span>
-    <span class="button icon reload" ng-click="import()">Import policy</span>
-    <input type="text" style="width:100%" ng-model="string.value"/>
+    <form name="myForm" class="policyform floatbox">
+      <span class="button icon add" ng-click="policies.push(emptyPolicy())">Add policy</span>
+      <span class="button icon reload"  ng-click="import()">Import policy</span>
+      <div class="title">
+          <input type="text" style="width:100%; margin-top=1em;" ng-model="string.value"/>
+          <span class="error" ng-show="validateImport()">Invalid profile!</span>
+      </div>
+    </form>
   </div>
 
   <h1>How to setup</h1>

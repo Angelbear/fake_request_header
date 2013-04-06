@@ -5,6 +5,7 @@ var Policy = (function(){
   var patternRegex = new RegExp('^(?:\\*|https?)://(?:\\*|(?:\\*[.])[^\\*]*|[^\\*]+)/.*$');
 
   var validate = function(policy) {
+    if(!policy.name) return false;
     if(!policy.pattern) return false;
     if(!patternRegex.test(policy.pattern)) return false;
 
@@ -25,23 +26,42 @@ var Policy = (function(){
     }
   };
 
-  var ruletypes = {
-    noop: {
-      label: "noop",
-      desc: "nothing to do"
-    },
-    empty: {
-      label: "empty",
-      desc: "don't send"
-    },
-    fixed: {
-      label: "fixed",
-      desc: "always send fixed string (%URL% is a special value that will be replaced by matched URL)"
-    },
-    extra: {
-      label: "extra",
-      desc: "add extra string"
-    }
+  var ruletypes = function(policy) {
+    if (policy == "Cookie") {
+        return  {
+            noop: {
+              label: "noop",
+              desc: "nothing to do"
+            },
+            empty: {
+              label: "empty",
+              desc: "don't send"
+            },
+            fixed: {
+              label: "fixed",
+              desc: "always send fixed string (%URL% is a special value that will be replaced by matched URL)"
+            },
+            extra: {
+              label: "extra",
+              desc: "add extra string"
+            }
+        };
+    } else {
+        return {
+            noop: {
+              label: "noop",
+              desc: "nothing to do"
+            },
+            empty: {
+              label: "empty",
+              desc: "don't send"
+            },
+            fixed: {
+              label: "fixed",
+              desc: "always send fixed string (%URL% is a special value that will be replaced by matched URL)"
+           },
+        };
+     }
   };
 
   var calculateRuledValue = function(rule, url) {
@@ -65,9 +85,22 @@ var Policy = (function(){
     }
   };
 
+
+  var rulepattern = function(policy) {
+      switch(policy) {
+          case "User-Agent":
+          case "Referer":
+              return new RegExp("^.+$");
+          case "Cookie":
+              return new RegExp("^(\\s*[^=;\\s]+=[^=;\\s]*\\s*;)*$");
+      }
+      return new RegExp("^.+$");
+  }
+
   return {
     RULES: ["Referer", "Cookie", "User-Agent"],
     RULETYPES: ruletypes,
+    RULEPATTERN: rulepattern,
     patternRegex: patternRegex,
     validate: validate,
     calculateRuledValue: calculateRuledValue

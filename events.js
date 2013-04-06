@@ -4,10 +4,25 @@ var data, rePatterns;
 function beforeEventCallback(details){
     var matchedUrl = details.url;
     var index = 0;
-    rePatterns.some(function(pattern){
+    var target_index = -1;
+    rePatterns.some(function(pattern) {
         ++index;
-        return pattern.test(matchedUrl);
+        var policy = data[index - 1];
+        console.log(policy.enable);
+        if (policy.enable == 1) {
+          if (pattern.test(matchedUrl)) {
+            target_index = index - 1;
+            return true;
+          }
+        }
+        return false;
     });
+
+    if ( target_index < 0 ) {
+        return {
+            requestHeaders: details.requestHeaders
+        };
+    }
     var policy = data[index - 1];
     var targetHeaders = Object.keys(policy.rules);
     var sendHeaders = details.requestHeaders;
@@ -23,7 +38,7 @@ function beforeEventCallback(details){
                 if (value.ruletype == "fixed" || value.ruletype == "empty") {
                     sendHeaders[i].value = value.value;
                 } else if (value.ruletype == "extra") {
-                    sendHeaders[i].value = sendHeaders[i].value + value.value;
+                    sendHeaders[i].value = value.value + sendHeaders[i].value;
                 }
             }
         }

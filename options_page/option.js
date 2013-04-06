@@ -1,24 +1,56 @@
+function notification_error(type, text) {
+    var notification = webkitNotifications.createNotification(
+        'icons/icon_48.png',  // icon url - can be relative
+        type,  // notification title
+        text  // notification body text
+    );
+    notification.show();
+}
+
 function FormListCtrl($scope) {
   $scope.policies = Datastore.load();
   $scope.rules = Policy.RULES;
-  $scope.ruletypes = Policy.RULETYPES;
   $scope.emptyPolicy = function(){
     var rules = $scope.rules.reduce(function(result, key){
       result[key] = {ruletype: "noop"};
       return result;
     }, {});
     return {
+      name: "Empty",
+      enable: 0,
       pattern: "http://*/*",
       rules: rules
     };
   };
   $scope.import = function() {
-    var text = Base64.decode($scope.string.value);
-    $scope.string.value = "";
-    var policy = eval('('+text+')');
-    if(Policy.validate(policy)) {
-       $scope.policies.push(policy);
+    try {
+      var text = Base64.decode($scope.string.value);
+      $scope.string.value = "";
+      var policy = JSON.parse(text);
+      if(Policy.validate(policy)) {
+         $scope.policies.push(policy);
+      } else {
+          notification_error("Error", "Can not import invalid profile!");
+      }
+    } catch (e) {
+        notification_error("Error", "Can not import invalid profile!");
     }
+  }
+  $scope.validateImport = function() {
+      if ($scope.string == null || $scope.string.value == null || $scope.string.value == "") {
+          return 0;
+      }
+      var text = Base64.decode($scope.string.value);
+      try {
+        var policy = JSON.parse(text);
+        if(Policy.validate(policy)) {
+            return 0;
+        } else {
+            return 1;
+        }
+      } catch (e) {
+          return 1;
+      }
   }
 }
 
@@ -32,7 +64,6 @@ function copyTextToClipboard(text) {
 
 function FormCtrl($scope) {
   $scope.urlRegex = Policy.patternRegex;
-
   $scope.remove = function(idx) {
     $scope.policies.splice(idx, 1);
     Datastore.remove(idx);
@@ -48,7 +79,7 @@ function FormCtrl($scope) {
     var base64_text = Base64.encode(JSON.stringify($scope.policy));
     copyTextToClipboard(base64_text);
     console.log(base64_text);
-    alert("This profile has been copied to your copyboard");
+    notification_error("Info", "This profile has been copied to your copyboard");
   }
 
   $scope.up = function(src) {
@@ -72,6 +103,9 @@ function FormCtrl($scope) {
 
 function RuleCtrl($scope) {
   $scope.rule = $scope.policy.rules[$scope.rulekey];
+  $scope.ruletypes = Policy.RULETYPES($scope.rulekey);
+  $scope.rulepattern = Policy.RULEPATTERN($scope.rulekey);
+  console.log($scope.rulepattern);
   $scope.isDisplayRuleValue = function() {
     return $scope.rule.ruletype == "fixed" || $scope.rule.ruletype == "extra";
   };
