@@ -2,6 +2,11 @@
 var data, rePatterns;
 
 function beforeEventCallback(details){
+    if(!localStorage['enable'] || localStorage['enable'] == 0) {
+        return {
+            requestHeaders: sendHeaders
+        };
+    }
     var matchedUrl = details.url;
     var index = 0;
     var target_index = -1;
@@ -71,9 +76,5 @@ chrome.extension.onMessage.addListener(
         }
     }
 );
-
-chrome.browserAction.onClicked.addListener(function(tab) {
-    
-});
 
 setupEventMonitor();
