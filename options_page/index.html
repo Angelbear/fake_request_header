@@ -61,10 +61,27 @@
 
   <h1>How to setup</h1>
   <div class="floatbox">
+    <h2>Add Policy</h2>
     <ol>
       <li>Click 'Add policy'</li>
-      <li>Input target URL pattern such as <var>http://*.fc2.com/*</var></li>
-      <li>Select your rule. e.g. Referer as 'empty'</li>
+      <li>Input target URL pattern such as <var>http://*.google.com/*</var>.</li>
+      <li>Change the policy name, enable, etc. as you want. </li>
+      <li>Select your rule and input rule value. e.g. Currently you can change Referer, Cookie and User Agent.</li>
+      <li>Referer and User Agent can be any text but Cookie should be in format <var>[key1]=[value1];[key2]=[value2];</var>, otherwise will not be accecpt.</li>
+      <li>Done!</li>
+    </ol>
+    <h2>Export Policy</h2>
+    <ol>
+      <li>Check that at least you have one policy.</li>
+      <li>Click the 'Export' in the right side of the policy scope.</li>
+      <li>Target policy will be encoded into text and copied to your copyboard with a notification.</li>
+      <li>You can send this text to other ones who do not want to form a same policy but do not want to do by self.</li>
+    </ol>
+    <h2>Import Policy</h2>
+    <ol>
+      <li>Copy the encoded policy as described in 'Export Policy' to the input field under 'Import Policy' button.</li>
+      <li>Click 'Import Policy'.</li>
+      <li>A new policy will be added into the policy list.</li>
       <li>Done!</li>
     </ol>
     <p>

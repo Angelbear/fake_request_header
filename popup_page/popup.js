@@ -19,4 +19,9 @@ function FormListCtrl($scope) {
         localStorage['enable'] = $scope.enable;
         changeIcon();
     };
+    $scope.go_option = function() {
+       chrome.tabs.create({
+           url: "../options_page/index.html"
+       });
+    }
 }

@@ -84,4 +84,5 @@ chrome.extension.onMessage.addListener(
     }
 );
 
+changeIconBadgeText();
 setupEventMonitor();

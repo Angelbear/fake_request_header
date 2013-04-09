@@ -29,6 +29,7 @@ function FormListCtrl($scope) {
       var policy = JSON.parse(text);
       if(Policy.validate(policy)) {
          $scope.policies.push(policy);
+         Datastore.save($scope.policies);
       } else {
           notification_error("Error", "Can not import invalid profile!");
       }
@@ -78,7 +79,6 @@ function FormCtrl($scope) {
   $scope.export = function() {
     var base64_text = Base64.encode(JSON.stringify($scope.policy));
     copyTextToClipboard(base64_text);
-    console.log(base64_text);
     notification_error("Info", "This profile has been copied to your copyboard");
   }
 
@@ -105,7 +105,6 @@ function RuleCtrl($scope) {
   $scope.rule = $scope.policy.rules[$scope.rulekey];
   $scope.ruletypes = Policy.RULETYPES($scope.rulekey);
   $scope.rulepattern = Policy.RULEPATTERN($scope.rulekey);
-  console.log($scope.rulepattern);
   $scope.isDisplayRuleValue = function() {
     return $scope.rule.ruletype == "fixed" || $scope.rule.ruletype == "extra";
   };

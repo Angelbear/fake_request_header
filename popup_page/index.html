@@ -1,34 +1,44 @@
 <!DOCTYPE html> 
 <html style="width:200px; height:200px;"  ng-app>
-<head>
-  <title></title>
-  <script src="../datastore.js"></script>
-  <script src="../policy.js"></script>
-  <script src="../lib/js/angular.min.js"></script>
-  <script src="popup.js"></script>
-  <script src="base64.js"></script>
-</head>
-<style type="text/css"> 
-* {margin:0;padding:0} 
-#main {margin:0 1px 1px 0}
-#main ul {width:100%;height:100%;list-style:none}
-#main li {border-left:0px solid #ccc; border-top:1px solid #ccc;float:left;width:100%;height:33px;text-align:left;line-height:33px; color:#003399;} 
-#main li.b {border-bottom:1px solid #ccc}
-#main li.r {border-right:1px solid #ccc}
-#main input.l{text-align:left}
-#main input.r{text-align:right}
-</style> 
-<body style="width:200px; height:200px;">
-<div id="main" ng-controller="FormListCtrl">
-    <ul>
-      <li>
-        <input class="l" type="radio" ng-change="settings()" ng-model="enable" value="1">On</input>
-        <input class="r" type="radio" ng-change="settings()" ng-model="enable" value="0">Off</input>
-      </li>
-      <li ng-repeat="(idx, policy) in policies">
-         <input type="checkbox" ng-change="save()" ng-model="policy.enable" ng-true-value="1" ng-false-value="0"/>&nbsp;{{ policy.name }}
-      </li>
-      <li></li>
-    </ul>
-  </div>
-</body></html> 
+	<head>
+		<title></title>
+		<script src="../datastore.js"></script>
+		<script src="../policy.js"></script>
+		<script src="../lib/js/angular.min.js"></script>
+		<script src="popup.js"></script>
+		<script src="base64.js"></script>
+	</head>
+	<style type="text/css"> 
+		* {margin:0;padding:0}
+		#control {margin:10px 0 10px 0}
+		#control input {margin: 0 10px 0 10px}
+		#main {margin:10px 1px 0 1px}
+		#main ul {width:100%;height:100%;list-style:none}
+		#main li {border-left:0px solid #777; border-top:1px solid #777;float:left;width:100%;height:33px;text-align:left;line-height:33px; color:#003399;} 
+		#main li.b {border-bottom:1px solid #777}
+		#main li.r {border-right:1px solid #777}
+		#main input.l{text-align:left}
+		#main input.r{text-align:right}
+		#tail {position:fixed; bottom:10px; right:10px;}
+	</style> 
+	<body style="width:200px; height:200px;">
+		<div ng-controller="FormListCtrl">
+			<div id="control">
+				<input class="l" type="radio" ng-change="settings()" ng-model="enable" value="1">On</input>
+				<input class="r" type="radio" ng-change="settings()" ng-model="enable" value="0">Off</input>
+			</div>
+			<div id="main">
+				<h4>Policy List</h4>
+				<ul>
+					<li ng-repeat="(idx, policy) in policies">
+					<input type="checkbox" ng-change="save()" ng-model="policy.enable" ng-true-value="1" ng-false-value="0"/>&nbsp;{{ policy.name }}
+					</li>
+					<li></li>
+				</ul>
+			</div>
+			<div id="tail">
+				<a href=""  ng-click="go_option()">go to option page</a>
+			</div>
+		</div>
+	</body>
+</html>
