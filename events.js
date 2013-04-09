@@ -67,10 +67,17 @@ function setupEventMonitor() {
     );
 }
 
+function changeIconBadgeText() {
+    data = Datastore.load();
+    var enabled = 0;
+    data.map(function(policy){ if(policy.enable == 1) { enabled++; } });
+    chrome.browserAction.setBadgeText({ "text": String(enabled) });
+}
 
 chrome.extension.onMessage.addListener(
     function(message){
         if(message === "DataUpdated") {
+            changeIconBadgeText();
             chrome.webRequest.onBeforeSendHeaders.removeListener(beforeEventCallback);
             setupEventMonitor();
         }
