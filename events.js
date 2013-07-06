@@ -2,7 +2,7 @@
 var data, rePatterns;
 
 function beforeEventCallback(details){
-    if(!localStorage['enable'] || localStorage['enable'] == 0) {
+    if(!localStorage[details.tabId] || localStorage[details.tabId] == 0) {
         return {
             requestHeaders: sendHeaders
         };
@@ -54,6 +54,20 @@ function beforeEventCallback(details){
     };
 }
 
+function changeIcon(enable) {
+    if (enable == 1) {
+        chrome.browserAction.setIcon({ "path": "../icons/icon_on.png" });
+    } else {
+        chrome.browserAction.setIcon({ "path": "../icons/icon_off.png" });
+    }
+}
+
+function currentTabChanged (activeInfo) {
+    var tabId = activeInfo.tabId;
+    localStorage["currentTab"] = tabId;
+    changeIcon(localStorage[tabId]);
+}
+
 function setupEventMonitor() {
     data = Datastore.load();
     rePatterns = data.map(function(policy){ return new RegExp(policy.pattern.replace(/\*/g, ".*")); });
@@ -65,6 +79,12 @@ function setupEventMonitor() {
             },
             ["blocking", "requestHeaders"]
     );
+    chrome.tabs.getAllInWindow(null, function(tabs){
+        for (var i = 0; i < tabs.length; i++) {
+            //localStorage.clear(tabs[i].id);
+        }
+    });
+    chrome.tabs.onActivated.addListener( currentTabChanged );
 }
 
 function changeIconBadgeText() {

@@ -16,7 +16,7 @@
     "default_icon": "icons/icon.png",
     "default_popup": "popup_page/index.html"
   },
-  "permissions": [ "webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "notifications"],
+  "permissions": [ "tabs", "webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "notifications"],
   "options_page": "options_page/index.html",
   "background": {
     "scripts": [
